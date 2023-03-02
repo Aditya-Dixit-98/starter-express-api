@@ -7,7 +7,8 @@ app.use(cors())
 app.use(express.json()); 
 console.log(process.env.OPENAI_API_KEY)
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+    organization: "org-gpPliMXAAXLXYe5rP3eHCf24",
+    apiKey: process.env.OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
@@ -16,17 +17,18 @@ app.post('/', async (req, res) => {
     openai.createCompletion({
         model: "text-davinci-003",
         prompt: req.body.prompt,
+        "temperature": 0.7,
+        "max_tokens": 256,
+        "top_p": 1,
+        "n":2,
+        "frequency_penalty": 0,
+        "presence_penalty": 0
       }).then(data => {
-        console.log(data.data.choices)
-        res.send(data.data.choices[0])
+        console.log(data)
+        res.send(data.data.choices)
       }).catch(error => {
         console.error(error)
       })
   })
 
   app.listen(3001)
-
-
-
-
-    
