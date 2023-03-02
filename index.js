@@ -1,25 +1,27 @@
-const express = require('express')
 const { Configuration, OpenAIApi } = require("openai");
 const cors = require('cors')
+const express = require('express')
+const app = express()
 require('dotenv').config();
 app.use(cors())
-app.use(express.json());
+app.use(express.json()); 
+console.log(process.env.OPENAI_API_KEY)
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
-
-const app = express()
-app.all('/', (req, res) => {
+app.post('/', async (req, res) => {
+    console.log(req.body.prompt)
     openai.createCompletion({
         model: "text-davinci-003",
         prompt: req.body.prompt,
       }).then(data => {
+        console.log(data.data.choices)
         res.send(data.data.choices[0])
       }).catch(error => {
         console.error(error)
       })
   })
-})
-app.listen(process.env.PORT || 3000)
+
+  app.listen(3001)
